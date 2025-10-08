@@ -1,0 +1,12 @@
+[tool.ruff]
+# Enable basic rule families (flake8-compatible)
+select = ["E", "W", "F"]
+
+# Ignore rules you don't care about (optional)
+# Example: ignore line length
+ignore = ["E501"]
+
+# Maximum line length
+line-length = 100
+
+# Ruff will automatically check whitespace consistency

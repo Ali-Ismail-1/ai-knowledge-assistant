@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     # Embeddings & Vector Stores
     embeddings_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     embedding_cache: str | None = None
-    persist_directory: str = str(BASE_DIR / "data" / "chroma")    
+    persist_directory: str = str(BASE_DIR / "data" / "chroma")
     chroma_url: str = "http://localhost:8000"
     retriever_k: int = 5
 
@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     allow_multiple_providers: bool = False
     allow_multiple_embeddings: bool = False
     allow_multiple_chroma: bool = False
-    
+
     # Streamlit
     streamlit_url: str = "http://localhost:8501"
 
@@ -53,5 +53,6 @@ class Settings(BaseSettings):
         env_file=str(BASE_DIR / ".env"),
         env_file_encoding="utf-8",
     )
-    
+
 settings = Settings()
+
