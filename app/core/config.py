@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 import torch
 
 # Base directory (two levels up from this file)
-BASE_DIR = Path(__file__).resolve().parent[2]
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 class Settings(BaseSettings):
     """
@@ -51,4 +51,6 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(BASE_DIR / ".env"),
         env_file_encoding="utf-8",
-    )        
+    )
+    
+settings = Settings()
