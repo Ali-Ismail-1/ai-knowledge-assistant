@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     embedding_cache: str | None = None
     persist_directory: str = str(BASE_DIR / "data" / "chroma")    
     chroma_url: str = "http://localhost:8000"
+    retriever_k: int = 5
 
     # RAG data
     doc_dir: str = str(BASE_DIR / "data" / "docs")

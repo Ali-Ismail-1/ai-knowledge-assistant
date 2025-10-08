@@ -1,5 +1,5 @@
 # app/guardrails/prompts.py
-from langchain_core.prompts import ChatPromptTemplate, MessagePlaceholder
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 BASE_PROMPT = ChatPromptTemplate.from_messages([
     ("system", """
@@ -7,6 +7,6 @@ BASE_PROMPT = ChatPromptTemplate.from_messages([
     If the context or chat history does not contain the answer, say "I don't know" and 
     politely suggest to the user that they can ask a different question.
     """),
-    MessagePlaceholder(variable_name="history"),
+    MessagesPlaceholder(variable_name="history"),
     ("human", "Question: {input}\n\nContext: \n{context}"),
 ])
