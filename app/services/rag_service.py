@@ -20,7 +20,7 @@ class RAGService:
             input_messages_key="input",
             history_messages_key="history",
         )
-    
+
     def ask(self, session_id: str, question: str) -> str:
         if contains_profanity(question):
             return "Inappropriate question detected. Please rephrase your question."

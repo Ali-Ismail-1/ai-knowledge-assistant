@@ -1,5 +1,4 @@
 # app/core/logging_config.py
-import logging
 from logging.config import dictConfig
 from pathlib import Path
 
