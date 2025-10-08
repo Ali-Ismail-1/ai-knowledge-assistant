@@ -1,3 +1,4 @@
+# app/guardrails/filters.py
 import re
 
 _THINK_RE = re.compile(r"<think>(.*?)</think>\s*", re.DOTALL)

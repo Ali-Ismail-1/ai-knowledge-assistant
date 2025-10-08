@@ -1,3 +1,4 @@
+# app/services/rag_service.py
 from typing import Optional
 from langchain_core.runnables import RunnableWithMessageHistory
 from app.guardrails.filters import contains_profanity, redact_pii, strip_think

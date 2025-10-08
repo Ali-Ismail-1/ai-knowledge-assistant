@@ -1,3 +1,4 @@
+# app/services/vectorstore_service.py
 import os
 from typing import Optional
 from langchain_chroma import Chroma
