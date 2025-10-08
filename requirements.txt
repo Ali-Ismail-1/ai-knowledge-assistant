@@ -1,9 +1,19 @@
+# ───────────────────────────────
+# Core Server
+# ───────────────────────────────
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
+
+# ───────────────────────────────
+# Configuration & Environment
+# ───────────────────────────────
 pydantic==2.9.2
 pydantic-settings==2.6.1
 python-dotenv==1.0.1
 
+# ───────────────────────────────
+# LangChain + RAG Stack
+# ───────────────────────────────
 langchain==0.2.14
 langchain-community==0.2.12
 langchain-openai==0.2.3
@@ -14,4 +24,13 @@ langchain-huggingface==0.0.3
 chromadb==0.5.11
 sentence-transformers==3.1.1
 
+# ───────────────────────────────
+# Frontend / Visualization
+# ───────────────────────────────
 streamlit==1.38.0
+
+# ───────────────────────────────
+# Deep Learning Backend
+# ───────────────────────────────
+torch  # don’t pin exact version, use GPU-specific install later
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
