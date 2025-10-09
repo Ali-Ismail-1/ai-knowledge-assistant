@@ -1,28 +1,28 @@
 # ───────────────────────────────
 # Core Server
 # ───────────────────────────────
-fastapi==0.115.0
-uvicorn[standard]==0.30.6
+fastapi==0.118.2
+uvicorn[standard]==0.37.0
 
 # ───────────────────────────────
 # Configuration & Environment
 # ───────────────────────────────
-pydantic==2.9.2
-pydantic-settings==2.6.1
-python-dotenv==1.0.1
+pydantic==2.12.0
+pydantic-settings==2.11.0
+python-dotenv==1.1.1
 
 # ───────────────────────────────
 # LangChain + RAG Stack
 # ───────────────────────────────
-langchain==0.2.14
-langchain-community==0.2.12
-langchain-openai==0.2.3
-langchain-ollama==0.2.0
-langchain-chroma==0.1.4
-langchain-huggingface==0.0.3
+langchain==0.3.27
+langchain-community==0.3.31
+langchain-openai==0.3.35
+langchain-ollama==0.3.10
+langchain-chroma==0.2.6
+langchain-huggingface==0.3.1
 
-chromadb==0.5.11
-sentence-transformers==3.1.1
+chromadb==1.1.1
+sentence-transformers==5.1.1
 
 # ───────────────────────────────
 # Frontend / Visualization
