@@ -50,7 +50,7 @@ tests/                      # pytest test suite
 ### 1. Clone and Install
 
 ```bash
-git clone https://github.com/yourusername/ai-knowledge-assistant.git
+git clone https://github.com/ali-ismail-1/ai-knowledge-assistant.git
 cd ai-knowledge-assistant
 
 # Create and activate virtual environment
@@ -327,5 +327,3 @@ This project is licensed under the MIT License. See `LICENSE` for details.
 ## Contact
 
 For questions or support, please open an issue on GitHub or contact the maintainers.
-
-**Project Repository:** [github.com/yourusername/ai-knowledge-assistant](https://github.com/yourusername/ai-knowledge-assistant)
