@@ -2,6 +2,8 @@
 from typing import Optional
 from langchain.agents import initialize_agent, AgentType
 from langchain_core.language_models.chat_models import BaseChatModel
+from app.core.config import settings
+from app.services.graph_service import LangGraphService
 from app.services.llm_service import get_llm
 from app.services.tools import make_tools
 from app.services.rag_service import RAGService
@@ -12,21 +14,27 @@ class AgentService:
         self.llm = llm or get_llm()
         self.rag = rag or RAGService()
 
-        # Bridge to RAGService for the retrieval tool
-        def _retrieve(q: str) -> str:
-            return self.rag.ask(session_id="agent-tool", question=q)
+        if settings.use_langgraph:
+            self.graph = LangGraphService(self.llm, self.rag)
+            self.agent = None
+        else:
+            # Bridge to RAGService for the retrieval tool
+            def _retrieve(q: str) -> str:
+                return self.rag.ask(session_id="agent-tool", question=q)
 
-        tools = make_tools(_retrieve)
-        # Zero-shot ReAct is a crisp baseline for tool use
-        self.agent = initialize_agent(
-            tools=tools,
-            llm=self.llm,
-            agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-            handle_parsing_errors=True,
-            verbose=False,
-        )
+            tools = make_tools(_retrieve)
+            # Zero-shot ReAct is a crisp baseline for tool use
+            self.agent = initialize_agent(
+                tools=tools,
+                llm=self.llm,
+                agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+                handle_parsing_errors=True,
+                verbose=False,
+            )
 
     def run(self, query: str) -> str:
+        if getattr(self, "graph", None):
+            return self.graph.run(query)
         return self.agent.run(query)
 
 _instance: Optional[AgentService] = None
