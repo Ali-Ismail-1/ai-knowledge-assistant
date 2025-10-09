@@ -20,7 +20,7 @@ class AgentService:
         # Zero-shot ReAct is a crisp baseline for tool use
         self.agent = initialize_agent(
             tools=tools,
-            llm=self.sllm,
+            llm=self.llm,
             agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
             handle_parsing_errors=True,
             verbose=False,
