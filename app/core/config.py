@@ -6,6 +6,7 @@ import torch
 # Base directory (two levels up from this file)
 BASE_DIR = Path(__file__).resolve().parents[2]
 
+
 class Settings(BaseSettings):
     """
     Configuration settings for the application.
@@ -19,7 +20,7 @@ class Settings(BaseSettings):
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
 
     # LLM Provideres
-    llm_provider: str = "ollama" # "openai" or "ollama"
+    llm_provider: str = "ollama"  # "openai" or "ollama"
 
     # OpenAI
     openai_model: str = "gpt-4o-mini"
@@ -33,7 +34,7 @@ class Settings(BaseSettings):
     embeddings_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     embedding_cache: str | None = None
     embedding_dimension: int = 384
-    vectorstore_provider: str = "pinecone" # "chroma" or "pinecone"
+    vectorstore_provider: str = "pinecone"  # "chroma" or "pinecone"
 
     # Chroma Settings
     persist_directory: str = str(BASE_DIR / "data" / "chroma")
@@ -63,5 +64,5 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
     )
 
-settings = Settings()
 
+settings = Settings()
