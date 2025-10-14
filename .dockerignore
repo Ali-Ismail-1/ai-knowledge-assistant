@@ -1,0 +1,19 @@
+# .dockerignore
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+env/
+venv/
+.git/
+.github/
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+.env
+data/chroma/*
+!data/docs/
+.DS_Store
