@@ -4,7 +4,6 @@ import json
 import logging
 from pathlib import Path
 from app.core.logging_config import setup_logging
-from app.monitoring import feedback
 from app.monitoring.feedback import record_feedback
 from app.monitoring.logger import log_interaction
 
@@ -17,14 +16,14 @@ def test_logging_does_not_crash(caplog):
     handler = logging.StreamHandler(stream)
     logger = logging.getLogger("rag")
     logger.addHandler(handler)
-
+    
     log_interaction("test-session", "test-question", "test-answer")
 
     handler.flush()
     output = stream.getvalue()
     handler.close()
     logger.removeHandler(handler)
-
+    
     assert "test-session" in output
     assert "test-question" in output
     assert "test-answer" in output
