@@ -1,6 +1,7 @@
 # app/services/vectorstore_service.py
 import os
 import logging
+import time
 from typing import Optional, Union
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import TextLoader, PyPDFLoader
