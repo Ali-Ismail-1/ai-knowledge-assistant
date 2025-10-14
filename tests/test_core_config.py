@@ -1,3 +1,4 @@
+# tests/test_core_config.py
 from app.core.config import settings
 
 def test_settings_load():
