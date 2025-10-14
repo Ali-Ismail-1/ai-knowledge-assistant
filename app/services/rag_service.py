@@ -25,7 +25,7 @@ class RAGService:
     def ask(self, session_id: str, question: str) -> str:
         if contains_profanity(question):
             return "Inappropriate question detected. Please rephrase your question."
-        
+
         result = self._runnable.invoke(
             {"input": question},
             config={"configurable": {"session_id": session_id}},
