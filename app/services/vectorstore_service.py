@@ -85,12 +85,21 @@ def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str 
 
         # Create or connect to index
         if index_name not in pc.list_indexes().names():
+            logger.info(f"Creating Pinecone index {index_name}")
             pc.create_index(
                 name=index_name,
                 dimension=settings.embedding_dimension,
                 metric="cosine",
                 spec={"serverless": {"cloud": "aws", "region": settings.pinecone_environment}},
             )
+
+            # Wait for index to be ready
+            while not pc.describe_index(index_name).status['ready']:
+                logger.info(f"Waiting for Pinecone index {index_name} to be ready")
+                time.sleep(1)
+            logger.info(f"Pinecone index {index_name} is ready")
+        else:
+            logger.info(f"Using existing Pinecone index {index_name}")
 
         # create vectorstore and add documents
         db = PineconeVectorStore.from_documents(
@@ -164,3 +173,16 @@ def get_retriever():
     if _retriever is None:
         _retriever = get_vectorstore().as_retriever(search_kwargs={"k": settings.retriever_k})
     return _retriever
+
+def reset_cache():
+    """Reset the vector store and retriever cache.
+
+    Useful for:
+    - Testing different configurations
+    - Switching between different vector stores
+    - Reloading after index updates
+    """
+    global _vectorstore, _retriever
+    _vectorstore = None
+    _retriever = None
+    logger.info("Vector store and retriever cache reset")
