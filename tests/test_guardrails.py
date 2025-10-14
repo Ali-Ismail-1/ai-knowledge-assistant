@@ -1,3 +1,4 @@
+# tests/test_guardrails.py
 from app.guardrails.filters import strip_think, redact_pii, contains_profanity
 
 def test_pii_redaction():
