@@ -1,0 +1,44 @@
+Pricing Plans
+
+Basic Plan - $9.99/month
+- Up to 5 users
+- 10 GB storage
+- Email support
+- Basic analytics
+- Monthly reports
+
+Professional Plan - $29.99/month
+- Up to 25 users
+- 100 GB storage
+- Priority email and chat support
+- Advanced analytics and insights
+- Real-time reporting
+- API access
+- Custom integrations
+
+Enterprise Plan - Custom pricing
+- Unlimited users
+- Unlimited storage
+- 24/7 phone support
+- Dedicated account manager
+- SLA guarantees
+- Advanced security features
+- On-premise deployment options
+- Custom training sessions
+
+All plans include:
+- 14-day free trial
+- No credit card required for trial
+- Cancel anytime
+- 99.9% uptime guarantee
+- Data export capabilities
+
+Annual Billing Discount:
+Save 20% when you pay annually! That's 2 months free.
+
+Nonprofit Discount:
+Qualified nonprofit organizations receive 50% off all plans. Contact sales@company.com with your nonprofit documentation.
+
+Student Discount:
+Students get the Professional plan for just $9.99/month with valid .edu email address.
+

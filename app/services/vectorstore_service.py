@@ -9,12 +9,17 @@ import os
 import logging
 import time
 from typing import Optional, Union, List
+from dotenv import load_dotenv
+from pathlib import Path
+
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.documents import Document
+
 
 from app.core.config import settings
 
@@ -23,10 +28,13 @@ logger = logging.getLogger(__name__)
 try:
     from langchain_pinecone import PineconeVectorStore
     from pinecone import Pinecone
+
     PINECONE_AVAILABLE = True
 except ImportError:
     PINECONE_AVAILABLE = False
-    logger.debug("Pinecone is not installed. Please install it with 'pip install langchain-pinecone'.")
+    logger.debug(
+        "Pinecone is not installed. Please install it with 'pip install langchain-pinecone'."
+    )
 
 if PINECONE_AVAILABLE:
     VectorStoreType = Union[Chroma, PineconeVectorStore]
@@ -35,7 +43,8 @@ else:
 
 # =============================
 # Helper Functions (Private)
-#==============================
+# ==============================
+
 
 def _validate_pinecone_config() -> None:
     """Validate Pinecone configuration.
@@ -45,10 +54,15 @@ def _validate_pinecone_config() -> None:
         ValueError: If Pinecone settings are missing
     """
     if not PINECONE_AVAILABLE:
-        raise ImportError("Pinecone is not installed. Please install it with 'pip install langchain-pinecone'.")
+        raise ImportError(
+            "Pinecone is not installed. Please install it with 'pip install langchain-pinecone'."
+        )
 
     if not settings.pinecone_api_key:
-        raise ValueError("Pinecone API key is not set. Please set it in the configuration.")
+        raise ValueError(
+            "Pinecone API key is not set. Please set it in the configuration."
+        )
+
 
 def _load_documents(doc_dir: str) -> List[Document]:
     """Load documents from directory with error handling.
@@ -102,10 +116,15 @@ def _load_documents(doc_dir: str) -> List[Document]:
             f"Found {files_processed} files but failed to load any documents from {doc_dir}"
         )
 
-    logger.info(f"Successfully loaded {len(docs)} documents from {files_processed} files")
+    logger.info(
+        f"Successfully loaded {len(docs)} documents from {files_processed} files"
+    )
     return docs
 
-def _split_documents(docs: List[Document], chunk_size: int = 800, chunk_overlap: int = 50) -> List[Document]:
+
+def _split_documents(
+    docs: List[Document], chunk_size: int = 800, chunk_overlap: int = 50
+) -> List[Document]:
     """Split documents into chunks.
 
     Args:
@@ -132,6 +151,7 @@ def _split_documents(docs: List[Document], chunk_size: int = 800, chunk_overlap:
     logger.info(f"Created {len(splits)} chunks from {len(docs)} documents")
     return splits
 
+
 def _ensure_pinecone_index(pc: Pinecone, index_name: str, dimension: int) -> None:
     """Ensure Pinecone index exists and is ready.
 
@@ -152,7 +172,9 @@ def _ensure_pinecone_index(pc: Pinecone, index_name: str, dimension: int) -> Non
             name=index_name,
             dimension=dimension,
             metric="cosine",
-            spec={"serverless": {"cloud": "aws", "region": settings.pinecone_environment}},
+            spec={
+                "serverless": {"cloud": "aws", "region": settings.pinecone_environment}
+            },
         )
 
         # Wait for index to be ready
@@ -161,7 +183,7 @@ def _ensure_pinecone_index(pc: Pinecone, index_name: str, dimension: int) -> Non
 
         while time.time() - start_time < max_wait:
             try:
-                if pc.describe_index(index_name).status['ready']:
+                if pc.describe_index(index_name).status["ready"]:
                     logger.info(f"Pinecone index {index_name} is ready")
                     return
             except Exception as e:
@@ -174,6 +196,7 @@ def _ensure_pinecone_index(pc: Pinecone, index_name: str, dimension: int) -> Non
 
     else:
         logger.info(f"Using existing Pinecone index {index_name}")
+
 
 def _build_pincone_vectorstore(
     splits: List[Document],
@@ -207,10 +230,12 @@ def _build_pincone_vectorstore(
         documents=splits,
         embedding=embeddings,
         index_name=index_name,
+        pinecone_api_key=settings.pinecone_api_key,
     )
 
     logger.info(f"Pinecone vectorstore for index {index_name} built successfully")
     return vectorstore
+
 
 def _build_chroma_vectorstore(
     splits: List[Document],
@@ -238,16 +263,45 @@ def _build_chroma_vectorstore(
 
     logger.info(f"Adding {len(splits)} chunks to Chroma vectorstore in {chroma_dir}")
     db.add_documents(splits)
-    db.persist()
 
     logger.info(f"Chroma vectorstore in {chroma_dir} built successfully")
     return db
+
 
 # ============================================================================
 # Public API Functions
 # ============================================================================
 
-def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str = None) -> VectorStoreType:
+
+def build_pinecone_vectorstore(
+    doc_dir: str, pinecone_index: str = None
+) -> PineconeVectorStore:
+    """Build and persist a Pinecone vectorstore from documents on disk."""
+    logger.info(f"Building Pinecone vectorstore from {doc_dir}")
+    print(f"Building Pinecone vectorstore from {doc_dir}")
+
+    # Load documents
+    docs = _load_documents(doc_dir)
+    splits = _split_documents(docs)
+
+    # Initialize embeddings
+    embeddings = HuggingFaceEmbeddings(model_name=settings.embeddings_model)
+
+    # Determine index name
+    index_name = pinecone_index or settings.pinecone_index
+
+    # Build Pinecone vectorstore
+    vectorstore = _build_pincone_vectorstore(splits, embeddings, index_name)
+
+    logger.info(f"Pinecone vectorstore for index {index_name} built successfully")
+    print(f"✅ Pinecone vectorstore for index '{index_name}' built successfully")
+
+    return vectorstore
+
+
+def build_vectorstore(
+    doc_dir: str, chroma_dir: str = None, pinecone_index: str = None
+) -> VectorStoreType:
     """Build and persist a vectorstore from documents on disk.
 
     This function recursively scans the provided `doc_dir` for supported
@@ -287,6 +341,8 @@ def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str 
     embeddings = HuggingFaceEmbeddings(model_name=settings.embeddings_model)
 
     # Build vectorstore based on provider
+    logger.info(f"Building {settings.vectorstore_provider} vectorstore from {doc_dir}")
+    print(f"Building {settings.vectorstore_provider} vectorstore from {doc_dir}")
     if settings.vectorstore_provider == "pinecone":
         index_name = pinecone_index or settings.pinecone_index
         return _build_pincone_vectorstore(splits, embeddings, index_name)
@@ -295,7 +351,9 @@ def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str 
         return _build_chroma_vectorstore(splits, embeddings, chroma_dir)
 
 
-def load_vectorstore(chroma_dir: str = None, pinecone_index: str = None) -> VectorStoreType:
+def load_vectorstore(
+    chroma_dir: str = None, pinecone_index: str = None
+) -> VectorStoreType:
     """Load an existing persisted vectorstore.
 
     Args:
@@ -315,7 +373,9 @@ def load_vectorstore(chroma_dir: str = None, pinecone_index: str = None) -> Vect
         >>> vs = load_vectorstore()
         >>> retriever = vs.as_retriever(search_kwargs={"k": 5})
     """
-    logger.info(f"Loading {settings.vectorstore_provider} vectorstore from {chroma_dir if chroma_dir else pinecone_index}")
+    logger.info(
+        f"Loading {settings.vectorstore_provider} vectorstore from {chroma_dir if chroma_dir else pinecone_index}"
+    )
 
     embeddings = HuggingFaceEmbeddings(model_name=settings.embeddings_model)
 
@@ -330,17 +390,16 @@ def load_vectorstore(chroma_dir: str = None, pinecone_index: str = None) -> Vect
             embedding=embeddings,
         )
 
-    else: # Default to Chroma
+    else:  # Default to Chroma
         chroma_path = chroma_dir or settings.persist_directory
 
         if not os.path.exists(chroma_path):
-            logger.warning(f"Chroma persistence directory {chroma_path} does not exist.")
+            logger.warning(
+                f"Chroma persistence directory {chroma_path} does not exist."
+            )
 
         logger.info(f"Loading Chroma vectorstore from {chroma_path}")
-        return Chroma(
-            persist_directory=chroma_path,
-            embedding_function=embeddings
-        )
+        return Chroma(persist_directory=chroma_path, embedding_function=embeddings)
 
 
 # ============================================================================
@@ -373,6 +432,7 @@ def get_vectorstore() -> VectorStoreType:
 
     return _vectorstore
 
+
 def get_retriever():
     """Return a lazily-initialized retriever bound to the vectorstore.
 
@@ -396,6 +456,7 @@ def get_retriever():
 
     return _retriever
 
+
 def reset_cache():
     """Reset the cached vectorstore and retriever instances.
 
@@ -413,4 +474,3 @@ def reset_cache():
     logger.info("Resetting vectorstore and retriever cache")
     _vectorstore = None
     _retriever = None
-

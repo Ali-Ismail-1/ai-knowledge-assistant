@@ -6,7 +6,7 @@ import torch
 
 # Base directory (two levels up from this file)
 BASE_DIR = Path(__file__).resolve().parents[2]
-
+ENV_PATH = BASE_DIR / ".env"
 
 class Settings(BaseSettings):
     """
@@ -62,9 +62,12 @@ class Settings(BaseSettings):
     # Streamlit
     streamlit_url: str = "http://localhost:8501"
 
+    # Env Path
+    env_path: str = str(ENV_PATH)
+
     # Model config
     model_config = SettingsConfigDict(
-        env_file=str(BASE_DIR / ".env"),
+        env_file=str(ENV_PATH),
         env_file_encoding="utf-8",
     )
 

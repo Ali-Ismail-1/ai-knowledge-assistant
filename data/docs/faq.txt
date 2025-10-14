@@ -1,0 +1,23 @@
+Frequently Asked Questions
+
+Q: What payment methods do you accept?
+A: We accept all major credit cards (Visa, Mastercard, American Express, Discover), PayPal, Apple Pay, and Google Pay. For enterprise customers, we also offer invoice billing with NET 30 terms.
+
+Q: Do you offer international shipping?
+A: Yes, we ship to over 100 countries worldwide. Shipping times vary by destination, typically 7-14 business days for international orders. Customs fees may apply and are the responsibility of the customer.
+
+Q: How do I track my order?
+A: Once your order ships, you'll receive a tracking number via email. You can also track your order status by logging into your account and viewing your order history.
+
+Q: What is your privacy policy?
+A: We take privacy seriously. We never sell your personal information to third parties. All data is encrypted in transit and at rest. See our full privacy policy at www.company.com/privacy
+
+Q: Can I change or cancel my order?
+A: Orders can be modified or cancelled within 2 hours of placement. After that, the order enters our fulfillment process and cannot be changed. However, you can always return items per our return policy.
+
+Q: Do you offer bulk discounts?
+A: Yes! Orders of 10+ units qualify for volume pricing. Enterprise customers can contact sales@company.com for custom quotes and dedicated account management.
+
+Q: What about technical support?
+A: Technical support is available 24/7 via live chat, email, or phone. Premium customers receive priority support with guaranteed response times under 1 hour.
+
