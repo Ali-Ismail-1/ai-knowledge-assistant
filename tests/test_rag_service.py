@@ -1,6 +1,6 @@
 # tests/test_rag_service.py
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from app.services.rag_service import (
     RAGService,
     get_rag_service,
