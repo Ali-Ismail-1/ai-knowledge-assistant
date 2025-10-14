@@ -16,12 +16,17 @@ try:
 except ImportError:
     PINECONE_AVAILABLE = False
 
-_vectorstore: Optional[Union[Chroma, PineconeVectorStore]] = None
+if PINECONE_AVAILABLE:
+    VectorStoreType = Union[Chroma, PineconeVectorStore]
+else:
+    VectorStoreType = Chroma
+
+_vectorstore: Optional[VectorStoreType] = None
 _retriever = None
 
 logger = logging.getLogger(__name__)
 
-def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str = None) -> Union[Chroma, PineconeVectorStore]:
+def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str = None) -> VectorStoreType:
     """Build and persist a vectorstore from documents on disk.
 
     This function recursively scans the provided `doc_dir` for supported
@@ -30,33 +35,42 @@ def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str 
     vector store at `chroma_dir`.
 
     Args:
-        doc_dir: Root directory to recursively search for documents. Files
-            ending with `.txt`, `.md`, and `.pdf` are supported.
-        chroma_dir: Directory where the Chroma database will be created or
-            updated and persisted. Used if vectorstore_provider is "chroma".
-        pinecone_index: Name of the Pinecone index. Used if vectorstore_provider
-            is "pinecone".
+        doc_dir: Root directory to recursively search for documents.
+        chroma_dir: Directory for Chroma database persistence. Only used when
+            vectorstore_provider is "chroma". Defaults to settings.persist_directory.
+        pinecone_index: Name of the Pinecone index. Only used when
+            vectorstore_provider is "pinecone". Defaults to settings.pinecone_index.
 
     Returns:
-        A vector store instance containing the embedded document chunks
-        persisted at `chroma_dir` or `pinecone_index`.
-    """    
+        A vectorstore instance (Chroma or PineconeVectorStore) containing
+        the embedded document chunks.
+
+    Raises:
+        ValueError: If no documents are found or no chunks are created.
+        ImportError: If Pinecone provider is configured but not installed.
+        FileNotFoundError: If doc_dir does not exist.
+
+    Example:
+        >>> vs = build_vectorstore("./data/docs")
+        >>> retriever = vs.as_retriever()
+    """
 
     docs = []
     for root, _, files in os.walk(doc_dir):
         for file in files:
             path = os.path.join(root, file)
             try:
-                if file.endswith((".txt", ".md")):
+                file_lower = file.lower()
+                if file_lower.endswith((".txt", ".md")):
                     docs.extend(TextLoader(path, encoding="utf-8").load())
-                elif file.endswith(".pdf"):
+                elif file_lower.endswith(".pdf"):
                     docs.extend(PyPDFLoader(path).load())
             except Exception as e:
                 logger.error(f"Error loading document {path}: {e}")
                 continue
 
     splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=50)
-    
+
     if not docs:
         logger.error(f"No documents found in {doc_dir}")
         raise ValueError(f"No documents found in directory: {doc_dir}")
@@ -65,9 +79,9 @@ def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str 
     if not splits:
         logger.error("No chunks created after splitting documents")
         raise ValueError("Document splitting resulting in no chunks created")
-        
+
     logger.info(f"Successfully loaded {len(docs)} documents and created {len(splits)} chunks")
-    
+
     embeddings = HuggingFaceEmbeddings(model_name=settings.embeddings_model)
 
     # Build vectorstore based on provider
@@ -109,7 +123,7 @@ def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str 
         )
 
         return db
-    else: # Default to Chroma    
+    else: # Default to Chroma
         chroma_path = chroma_dir or settings.persist_directory
         os.makedirs(chroma_path, exist_ok=True)
 
@@ -123,7 +137,7 @@ def load_vectorstore(chroma_dir: str = None, pinecone_index: str = None) -> Unio
     """Load an existing persisted Chroma vector store.
 
     Args:
-        chroma_dir: Path to the Chroma persistence directory. Used if 
+        chroma_dir: Path to the Chroma persistence directory. Used if
             vectorstore_provider is "chroma".
         pinecone_index: Name of the Pinecone index. Used if vectorstore_provider
             is "pinecone".
