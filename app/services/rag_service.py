@@ -7,7 +7,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
 from app.services.llm_service import get_llm
 from app.services.vectorstore_service import get_retriever
-from app.services.memory_service import get_history
+from app.services.memory_service import get_history, get_summary_memory
 
 
 class RAGService:
@@ -25,6 +25,7 @@ class RAGService:
     def ask(self, session_id: str, question: str) -> str:
         if contains_profanity(question):
             return "Inappropriate question detected. Please rephrase your question."
+
         result = self._runnable.invoke(
             {"input": question},
             config={"configurable": {"session_id": session_id}},
@@ -32,6 +33,10 @@ class RAGService:
         answer = result.get("answer") or str(result)
         answer = strip_think(answer)
         answer = redact_pii(answer)
+
+        # Update summary memory
+        memory = get_summary_memory(session_id)
+        memory.save_context({"input": question}, {"output": answer})
         return answer
 
 _instance: Optional[RAGService] = None
