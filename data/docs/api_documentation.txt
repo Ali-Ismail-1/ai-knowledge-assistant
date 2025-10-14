@@ -1,0 +1,49 @@
+API Documentation v2.0
+
+Authentication:
+All API requests require an API key passed in the Authorization header:
+Authorization: Bearer YOUR_API_KEY
+
+You can generate API keys in your account dashboard under Settings > API Keys.
+
+Rate Limits:
+- Basic: 100 requests/hour
+- Professional: 1,000 requests/hour  
+- Enterprise: 10,000 requests/hour
+
+Endpoints:
+
+GET /api/v2/users
+Retrieve list of users in your organization
+Parameters: page (int), limit (int, max 100)
+Response: JSON array of user objects
+
+POST /api/v2/users
+Create a new user
+Body: { "email": "user@example.com", "name": "John Doe", "role": "member" }
+Response: User object with generated ID
+
+GET /api/v2/analytics
+Retrieve analytics data
+Parameters: start_date (ISO 8601), end_date (ISO 8601), metric (string)
+Response: Time series data in JSON format
+
+POST /api/v2/webhooks
+Register a webhook endpoint
+Body: { "url": "https://your-domain.com/webhook", "events": ["user.created", "data.updated"] }
+Response: Webhook ID and secret for validation
+
+Error Codes:
+- 400: Bad Request - Invalid parameters
+- 401: Unauthorized - Invalid or missing API key
+- 403: Forbidden - Insufficient permissions
+- 404: Not Found - Resource doesn't exist
+- 429: Too Many Requests - Rate limit exceeded
+- 500: Internal Server Error - Contact support
+
+Best Practices:
+- Use exponential backoff for retries
+- Implement webhook signature validation
+- Cache responses when possible
+- Use pagination for large datasets
+

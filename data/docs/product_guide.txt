@@ -1,0 +1,27 @@
+Product User Guide - SmartWidget Pro
+
+Getting Started:
+The SmartWidget Pro is our flagship product designed for productivity enthusiasts. It features AI-powered automation, cloud sync, and advanced analytics.
+
+Key Features:
+- Voice command integration with 95% accuracy
+- Real-time collaboration with up to 50 users
+- End-to-end encryption for data security
+- 24/7 customer support
+- Mobile app available on iOS and Android
+
+Setup Instructions:
+1. Unbox your SmartWidget Pro and connect to power
+2. Download the companion app from your device's app store
+3. Create an account or sign in with existing credentials
+4. Follow the in-app setup wizard
+5. Customize your preferences in Settings
+
+Troubleshooting:
+If your device won't connect to WiFi, ensure you're using a 2.4GHz network. The SmartWidget Pro does not support 5GHz networks at this time.
+
+For battery issues, try a full power cycle by holding the power button for 10 seconds.
+
+Warranty:
+All SmartWidget Pro devices come with a 2-year manufacturer warranty covering defects in materials and workmanship.
+
