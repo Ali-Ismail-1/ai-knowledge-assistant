@@ -1,4 +1,5 @@
 # app/services/tools.py
+import pathlib
 from langchain.agents import Tool
 from typing import Callable
 
@@ -14,7 +15,6 @@ except Exception:
         return "(Web search not available - please install langchain-community)"
 
 # Calculator
-from math import sin, cos, tan, sqrt, log, pi, e, pow, floor, ceil, abs, max, min, round, exp
 def _calc(expression: str) -> str:
     try:
         allowed = {k: v for k, v in globals().items() if k in {
@@ -25,7 +25,6 @@ def _calc(expression: str) -> str:
         return f"calc error: {e}"
 
 # File read tool (read-only)
-import pathlib
 
 def _read_file(path: str) -> str:
     p = pathlib.Path(path)
