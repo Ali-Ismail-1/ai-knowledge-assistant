@@ -32,7 +32,8 @@ class Settings(BaseSettings):
     # Embeddings & Vector Stores
     embeddings_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     embedding_cache: str | None = None
-    vectorstore_provider: str = "chroma" # "chroma" or "pinecone"
+    embedding_dimension: int = 384
+    vectorstore_provider: str = "pinecone" # "chroma" or "pinecone"
 
     # Chroma Settings
     persist_directory: str = str(BASE_DIR / "data" / "chroma")
@@ -42,7 +43,7 @@ class Settings(BaseSettings):
     # Pinecone Settings
     pinecone_api_key: str | None = None
     pinecone_index: str = "default-index"
-    pinecone_environment: str = "us-east-1-aws"
+    pinecone_environment: str = "us-east-1"
 
     # RAG data
     doc_dir: str = str(BASE_DIR / "data" / "docs")
