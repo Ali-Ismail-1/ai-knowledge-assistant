@@ -3,6 +3,4 @@ httpx==0.28.1
 ruff==0.14.0
 pytest-asyncio==0.24.0
 pytest-cov==6.0.0
-
-# Note: black removed in favor of ruff format
-# Run: ruff format app/ tests/
+black==25.1.0
