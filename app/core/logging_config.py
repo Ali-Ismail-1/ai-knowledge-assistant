@@ -2,11 +2,11 @@
 from logging.config import dictConfig
 from pathlib import Path
 
-LOG_DIR = Path("logs")
-LOG_DIR.mkdir(parents=True, exist_ok=True)
 
+def setup_logging(base_dir: str | None = None) -> None:
+    LOG_DIR = Path(base_dir or "logs")
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-def setup_logging():
     dictConfig(
         {
             "version": 1,
@@ -42,12 +42,12 @@ def setup_logging():
                 "rag": {
                     "handlers": ["console", "file_app"],
                     "level": "INFO",
-                    "propagate": False,
+                    "propagate": True,
                 },
                 "feedback": {
                     "handlers": ["console", "file_feedback"],
                     "level": "INFO",
-                    "propagate": False,
+                    "propagate": True,
                 },
             },
             "root": {"handlers": ["console", "file_app"], "level": "WARNING"},
