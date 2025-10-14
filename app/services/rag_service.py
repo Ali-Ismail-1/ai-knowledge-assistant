@@ -146,11 +146,11 @@ class RAGService:
         """
         # Input guardrail: Profanity filtering
         if contains_profanity(question):
-            return self._respond(
+            return self._log_and_respond(
                 session_id,
                 question,
                 PROFANITY_REJECTION_MSG,
-                {"guardrails": "profanity"},
+                meta={"guardrails": "profanity"},
             )
 
         try:
