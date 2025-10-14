@@ -17,7 +17,7 @@ def get_history(session_id: str) -> ChatMessageHistory:
 def get_summary_memory(session_id: str) -> ConversationSummaryBufferMemory:
     if session_id not in _summary_store:
         _summary_store[session_id] = ConversationSummaryBufferMemory(
-            llm=get_llm(), 
+            llm=get_llm(),
             max_token_limit=1000,
             return_messages=False
         )
