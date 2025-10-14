@@ -1,5 +1,6 @@
 # app/services/vectorstore_service.py
 import os
+import logging
 from typing import Optional, Union
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import TextLoader, PyPDFLoader
@@ -16,6 +17,8 @@ except ImportError:
 
 _vectorstore: Optional[Union[Chroma, PineconeVectorStore]] = None
 _retriever = None
+
+logger = logging.getLogger(__name__)
 
 def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str = None) -> Union[Chroma, PineconeVectorStore]:
     """Build and persist a vectorstore from documents on disk.
@@ -48,12 +51,22 @@ def build_vectorstore(doc_dir: str, chroma_dir: str = None, pinecone_index: str 
                 elif file.endswith(".pdf"):
                     docs.extend(PyPDFLoader(path).load())
             except Exception as e:
-                print(f"Error loading document {path}: {e}")
+                logger.error(f"Error loading document {path}: {e}")
                 continue
 
     splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=50)
-    splits = splitter.split_documents(docs) if docs else []
+    
+    if not docs:
+        logger.error(f"No documents found in {doc_dir}")
+        raise ValueError(f"No documents found in directory: {doc_dir}")
 
+    splits = splitter.split_documents(docs)
+    if not splits:
+        logger.error("No chunks created after splitting documents")
+        raise ValueError("Document splitting resulting in no chunks created")
+        
+    logger.info(f"Successfully loaded {len(docs)} documents and created {len(splits)} chunks")
+    
     embeddings = HuggingFaceEmbeddings(model_name=settings.embeddings_model)
 
     # Build vectorstore based on provider
