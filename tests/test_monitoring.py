@@ -16,14 +16,14 @@ def test_logging_does_not_crash(caplog):
     handler = logging.StreamHandler(stream)
     logger = logging.getLogger("rag")
     logger.addHandler(handler)
-    
+
     log_interaction("test-session", "test-question", "test-answer")
 
     handler.flush()
     output = stream.getvalue()
     handler.close()
     logger.removeHandler(handler)
-    
+
     assert "test-session" in output
     assert "test-question" in output
     assert "test-answer" in output

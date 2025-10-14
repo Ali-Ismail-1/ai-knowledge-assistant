@@ -1,0 +1,12 @@
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "W", "F"]
+ignore = ["E501", "E402"]
+
+[tool.ruff.format]
+# Use Black-compatible formatting settings
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
